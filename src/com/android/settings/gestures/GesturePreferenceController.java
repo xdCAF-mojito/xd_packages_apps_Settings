@@ -16,11 +16,12 @@
 
 package com.android.settings.gestures;
 
+import android.os.Bundle;
 import android.content.Context;
 
-import androidx.preference.Preference;
-import androidx.preference.PreferenceScreen;
+import androidx.preference.*;
 
+import com.android.internal.util.xdroid.Utils;
 import com.android.settings.R;
 import com.android.settings.core.TogglePreferenceController;
 import com.android.settings.widget.VideoPreference;
@@ -32,7 +33,21 @@ public abstract class GesturePreferenceController extends TogglePreferenceContro
         implements Preference.OnPreferenceChangeListener,
         LifecycleObserver, OnStart, OnStop {
 
+    private static final String LAYOUT_SETTINGS = "navbar_layout_views";
+
     private VideoPreference mVideoPreference;
+    private Preference mLayoutSettings;
+
+    public void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+        final PreferenceScreen prefScreen = getPreferenceScreen();
+
+        mLayoutSettings = (Preference) findPreference(LAYOUT_SETTINGS);
+
+        if (!Utils.isThemeEnabled("com.android.internal.systemui.navbar.threebutton")) {
+            prefScreen.removePreference(mLayoutSettings);
+        }
+    }
 
     public GesturePreferenceController(Context context, String key) {
         super(context, key);
